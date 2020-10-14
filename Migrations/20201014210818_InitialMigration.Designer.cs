@@ -9,8 +9,8 @@ using Models;
 namespace demo.Migrations
 {
     [DbContext(typeof(LineOfCreditContext))]
-    [Migration("20201014203639_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20201014210818_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
