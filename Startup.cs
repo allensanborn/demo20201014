@@ -9,6 +9,11 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
 
+using Breeze.AspNetCore;
+using Breeze.Core;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Serialization;
+
 namespace demo
 {
     public class Startup
