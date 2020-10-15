@@ -15,7 +15,7 @@ export class Creditors extends React.Component<any, CreditorState> {
     super(props);
     this.state = {
       Creditors: [] as Creditor[],
-      selected: null as Creditor
+      selected: null as unknown as Creditor
     };
     this.manager = entityManagerProvider.newManager();
 
@@ -80,7 +80,7 @@ export class Creditors extends React.Component<any, CreditorState> {
       return <div><h3>Edit</h3>
         <div>Name: <input type="text" name="name" value={creditor.name || ''} onChange={creditor.handleChange} /></div>       
 
-        <button type="button" onClick={this.remove.bind(this, creditor)}>Delete</button>
+        <button type="button" className="btn btn-dark" onClick={this.remove.bind(this, creditor)}>Delete</button>
       </div>
     }
   }
@@ -110,13 +110,13 @@ export class Creditors extends React.Component<any, CreditorState> {
             }
           </tbody>
         </table>
-        <button type="button" onClick={this.addCreditor}>Add Creditor</button>
+        <button type="button" className="btn btn-dark" onClick={this.addCreditor}>Add Creditor</button>
 
         {this.renderCustEdit()}
 
         <div style={{ marginTop: '20px' }}>
-          <button type="button" disabled={!this.manager.hasChanges()} onClick={this.saveChanges}>Save Changes</button>
-          <button type="button" disabled={!this.manager.hasChanges()} onClick={this.rejectChanges}>Revert Changes</button>
+          <button type="button" className="btn btn-dark" disabled={!this.manager.hasChanges()} onClick={this.saveChanges}>Save Changes</button>
+          <button type="button" className="btn btn-dark" disabled={!this.manager.hasChanges()} onClick={this.rejectChanges}>Revert Changes</button>
         </div>
 
       </div>

@@ -81,7 +81,7 @@ export class Clients extends React.Component<any, ClientState> {
         <div>First Name: <input type="text" name="firstName" value={cust.firstName || ''} onChange={cust.handleChange} /></div>
         <div>Last Name: <input type="text" name="lastName" value={cust.lastName || ''} onChange={cust.handleChange} /></div>
 
-        <button type="button" onClick={this.remove.bind(this, cust)}>Delete</button>
+        <button type="button" className="btn btn-dark" onClick={this.remove.bind(this, cust)}>Delete</button>
       </div>
     }
   }
@@ -113,13 +113,13 @@ export class Clients extends React.Component<any, ClientState> {
             }
           </tbody>
         </table>
-        <button type="button" onClick={this.addClient}>Add Client</button>
+        <button type="button" className="btn btn-dark" onClick={this.addClient}>Add Client</button>
 
         {this.renderCustEdit()}
 
         <div style={{ marginTop: '20px' }}>
-          <button type="button" disabled={!this.manager.hasChanges()} onClick={this.saveChanges}>Save Changes</button>
-          <button type="button" disabled={!this.manager.hasChanges()} onClick={this.rejectChanges}>Revert Changes</button>
+          <button type="button" className="btn btn-dark" disabled={!this.manager.hasChanges()} onClick={this.saveChanges}>Save Changes</button>
+          <button type="button" className="btn btn-dark" disabled={!this.manager.hasChanges()} onClick={this.rejectChanges}>Revert Changes</button>
         </div>
 
       </div>
