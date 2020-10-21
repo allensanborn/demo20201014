@@ -1,8 +1,9 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 
 namespace Models
 {
-    public class LineOfCreditContext :DbContext{
+    public class LineOfCreditContext : DbContext{
 
         public LineOfCreditContext()
         {

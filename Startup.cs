@@ -63,6 +63,14 @@ namespace demo
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                
+
+                using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                {
+                    //serviceScope.ServiceProvider.GetService<LineOfCreditContext>().Database.Migrate();
+                    serviceScope.ServiceProvider.GetService<LineOfCreditContext>().EnsureSeedData();
+                }
+
             }
             else
             {
@@ -75,7 +83,7 @@ namespace demo
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.UseRouting(); 
+            app.UseRouting();
 
             // Allow any host - development only!
             // TODO Harden cors
