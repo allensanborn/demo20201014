@@ -16,6 +16,7 @@ using Newtonsoft.Json.Serialization;
 using Models;
 
 using Serilog;
+using System.Threading.Tasks;
 
 namespace demo
 {
@@ -70,7 +71,7 @@ namespace demo
                 using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     //serviceScope.ServiceProvider.GetService<LineOfCreditContext>().Database.Migrate();
-                    serviceScope.ServiceProvider.GetService<LineOfCreditContext>().EnsureSeedData();
+                    //serviceScope.ServiceProvider.GetService<LineOfCreditContext>().EnsureSeedData();
                 }
 
             }

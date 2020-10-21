@@ -22,7 +22,7 @@ namespace Models
             {
                 PropertyNameCaseInsensitive = true,
             };
-            var result =  JsonSerializer.Deserialize<IEnumerable<Record>>(response, options);
+            var result = JsonSerializer.Deserialize<IEnumerable<Record>>(response, options);
             return result;
         }
 
@@ -36,14 +36,13 @@ namespace Models
         }
 
     }
-
     public class Record
     {
-        public int Id { get; set; }
-        public int CreditorName { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public decimal MinPaymentPercentage { get; set; }
-        public decimal Balance { get; set; }
+        public int id { get; set; }
+        public string creditorName { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+        public double minPaymentPercentage { get; set; }
+        public double balance { get; set; }
     }
 }

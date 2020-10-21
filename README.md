@@ -14,3 +14,6 @@ dotnet ef database update
 
 generate metadata 
 dotnet .\bin\Debug\netcoreapp3.1\demo.dll metadata > metadata.json
+
+
+https://nblumhardt.com/2019/10/serilog-in-aspnetcore-3/
