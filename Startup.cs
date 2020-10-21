@@ -14,6 +14,9 @@ using Breeze.Core;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 using Models;
+
+using Serilog;
+
 namespace demo
 {
     public class Startup
@@ -60,11 +63,10 @@ namespace demo
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                
-
                 using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     //serviceScope.ServiceProvider.GetService<LineOfCreditContext>().Database.Migrate();
@@ -78,7 +80,7 @@ namespace demo
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseSerilogRequestLogging();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
