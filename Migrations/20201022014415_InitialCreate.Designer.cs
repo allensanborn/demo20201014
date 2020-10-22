@@ -9,8 +9,8 @@ using Models;
 namespace demo.Migrations
 {
     [DbContext(typeof(LineOfCreditContext))]
-    [Migration("20201014213942_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20201022014415_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,9 +22,6 @@ namespace demo.Migrations
                 {
                     b.Property<int>("ClientId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("CreditorId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
@@ -43,8 +40,6 @@ namespace demo.Migrations
                         .HasColumnType("BLOB");
 
                     b.HasKey("ClientId");
-
-                    b.HasIndex("CreditorId");
 
                     b.ToTable("Clients");
                 });
@@ -100,13 +95,6 @@ namespace demo.Migrations
                     b.HasIndex("CreditorId");
 
                     b.ToTable("LinesOfCredit");
-                });
-
-            modelBuilder.Entity("Models.Client", b =>
-                {
-                    b.HasOne("Models.Creditor", null)
-                        .WithMany("Clients")
-                        .HasForeignKey("CreditorId");
                 });
 
             modelBuilder.Entity("Models.LineOfCredit", b =>

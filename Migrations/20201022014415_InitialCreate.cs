@@ -3,10 +3,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace demo.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    ClientId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FirstName = table.Column<string>(maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(maxLength: 100, nullable: false),
+                    Timestamp = table.Column<byte[]>(rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.ClientId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Creditors",
                 columns: table => new
@@ -19,28 +34,6 @@ namespace demo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Creditors", x => x.CreditorId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Clients",
-                columns: table => new
-                {
-                    ClientId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    FirstName = table.Column<string>(maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(maxLength: 100, nullable: false),
-                    Timestamp = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    CreditorId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clients", x => x.ClientId);
-                    table.ForeignKey(
-                        name: "FK_Clients_Creditors_CreditorId",
-                        column: x => x.CreditorId,
-                        principalTable: "Creditors",
-                        principalColumn: "CreditorId",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -71,11 +64,6 @@ namespace demo.Migrations
                         principalColumn: "CreditorId",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Clients_CreditorId",
-                table: "Clients",
-                column: "CreditorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LinesOfCredit_ClientId",

@@ -22,9 +22,6 @@ namespace demo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CreditorId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("TEXT")
@@ -41,8 +38,6 @@ namespace demo.Migrations
                         .HasColumnType("BLOB");
 
                     b.HasKey("ClientId");
-
-                    b.HasIndex("CreditorId");
 
                     b.ToTable("Clients");
                 });
@@ -98,13 +93,6 @@ namespace demo.Migrations
                     b.HasIndex("CreditorId");
 
                     b.ToTable("LinesOfCredit");
-                });
-
-            modelBuilder.Entity("Models.Client", b =>
-                {
-                    b.HasOne("Models.Creditor", null)
-                        .WithMany("Clients")
-                        .HasForeignKey("CreditorId");
                 });
 
             modelBuilder.Entity("Models.LineOfCredit", b =>
