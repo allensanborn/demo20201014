@@ -8,7 +8,7 @@ namespace demo.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Clients",
+                name: "Client",
                 columns: table => new
                 {
                     ClientId = table.Column<int>(nullable: false)
@@ -19,11 +19,11 @@ namespace demo.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clients", x => x.ClientId);
+                    table.PrimaryKey("PK_Client", x => x.ClientId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Creditors",
+                name: "Creditor",
                 columns: table => new
                 {
                     CreditorId = table.Column<int>(nullable: false)
@@ -33,11 +33,11 @@ namespace demo.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Creditors", x => x.CreditorId);
+                    table.PrimaryKey("PK_Creditor", x => x.CreditorId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "LinesOfCredit",
+                name: "LineOfCredit",
                 columns: table => new
                 {
                     LineOfCreditId = table.Column<int>(nullable: false)
@@ -50,42 +50,42 @@ namespace demo.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LinesOfCredit", x => x.LineOfCreditId);
+                    table.PrimaryKey("PK_LineOfCredit", x => x.LineOfCreditId);
                     table.ForeignKey(
-                        name: "FK_LinesOfCredit_Clients_ClientId",
+                        name: "FK_LineOfCredit_Client_ClientId",
                         column: x => x.ClientId,
-                        principalTable: "Clients",
+                        principalTable: "Client",
                         principalColumn: "ClientId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LinesOfCredit_Creditors_CreditorId",
+                        name: "FK_LineOfCredit_Creditor_CreditorId",
                         column: x => x.CreditorId,
-                        principalTable: "Creditors",
+                        principalTable: "Creditor",
                         principalColumn: "CreditorId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_LinesOfCredit_ClientId",
-                table: "LinesOfCredit",
+                name: "IX_LineOfCredit_ClientId",
+                table: "LineOfCredit",
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LinesOfCredit_CreditorId",
-                table: "LinesOfCredit",
+                name: "IX_LineOfCredit_CreditorId",
+                table: "LineOfCredit",
                 column: "CreditorId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "LinesOfCredit");
+                name: "LineOfCredit");
 
             migrationBuilder.DropTable(
-                name: "Clients");
+                name: "Client");
 
             migrationBuilder.DropTable(
-                name: "Creditors");
+                name: "Creditor");
         }
     }
 }

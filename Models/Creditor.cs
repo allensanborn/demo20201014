@@ -5,6 +5,11 @@ namespace Models
 
     public class Creditor
     {
+        public Creditor()
+        {
+            LinesOfCredit = new HashSet<LineOfCredit>();
+        }
+        
         public int CreditorId { get; set; }
 
         [Required]

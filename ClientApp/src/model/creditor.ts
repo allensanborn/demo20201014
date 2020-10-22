@@ -1,7 +1,7 @@
 // tslint:disable:no-trailing-whitespace
 // tslint:disable:member-ordering
 import { BaseEntity } from './base-entity';
-import { Client } from './client';
+import { LineOfCredit } from './line-of-credit';
 
 /// <code-import> Place custom imports between <code-import> tags
 
@@ -17,6 +17,6 @@ export class Creditor extends BaseEntity  {
   creditorId: number;
   name: string;
   timestamp: any;
-  clients: Client[];
+  linesOfCredit: LineOfCredit[];
 }
 

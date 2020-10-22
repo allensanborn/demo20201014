@@ -20,17 +20,17 @@ public class BreezeController : Controller
     [HttpGet]
     public IQueryable<Client> Clients()
     {
-        return persistenceManager.Context.Clients;
+        return persistenceManager.Context.Client;
     }
     [HttpGet]
     public IQueryable<Creditor> Creditors()
     {
-        return persistenceManager.Context.Creditors;
+        return persistenceManager.Context.Creditor;
     }
     [HttpGet]
     public IQueryable<LineOfCredit> LinesOfCredit()
     {
-        return persistenceManager.Context.LinesOfCredit;
+        return persistenceManager.Context.LineOfCredit;
     }
     [HttpPost]
     public ActionResult<SaveResult> SaveChanges([FromBody] JObject saveBundle)
@@ -44,11 +44,11 @@ public class BreezeController : Controller
         var importer = new ImportData();
         var records = await importer.Get();
 
-        if (!persistenceManager.Context.LinesOfCredit.Any())
+        if (!persistenceManager.Context.LineOfCredit.Any())
         {
-            var clients = persistenceManager.Context.Clients;
+            var clients = persistenceManager.Context.Client;
             persistenceManager.Context.RemoveRange(clients);
-            var creditors = persistenceManager.Context.Creditors;
+            var creditors = persistenceManager.Context.Creditor;
             persistenceManager.Context.RemoveRange(creditors);
 
             var creditorsFromJson = records.GroupBy(record => record.creditorName)
@@ -58,8 +58,8 @@ public class BreezeController : Controller
                                .Select(grp => new Client { FirstName = grp.First().firstName, LastName = grp.First().lastName })
                                .ToList();
 
-            persistenceManager.Context.Creditors.AddRange(creditorsFromJson);
-            persistenceManager.Context.Clients.AddRange(clientsFromJson);
+            persistenceManager.Context.Creditor.AddRange(creditorsFromJson);
+            persistenceManager.Context.Client.AddRange(clientsFromJson);
             persistenceManager.Context.SaveChanges();
 
 
@@ -68,15 +68,15 @@ public class BreezeController : Controller
                 var loc = new LineOfCredit();
                 loc.Balance = (decimal)record.balance;
                 loc.MinPaymentPercentage = (decimal)record.minPaymentPercentage;
-                loc.ClientId = persistenceManager.Context.Clients
+                loc.ClientId = persistenceManager.Context.Client
                 .Where(client => client.FirstName == record.firstName && client.LastName == record.lastName)
                 .Select(client => client.ClientId)
                 .First();
-                loc.CreditorId = persistenceManager.Context.Creditors
+                loc.CreditorId = persistenceManager.Context.Creditor
                 .Where(creditor=>creditor.Name == record.creditorName)
                 .Select(creditor=>creditor.CreditorId)
                 .First();
-                persistenceManager.Context.LinesOfCredit.Add(loc);
+                persistenceManager.Context.LineOfCredit.Add(loc);
             }
             persistenceManager.Context.SaveChanges();
 

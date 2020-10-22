@@ -33,7 +33,7 @@ namespace demo
                 .WriteTo.Seq("http://localhost:5341")
                 .CreateLogger();
 
-            Log.Error("Starting web host");
+            Log.Information("Starting web host");
             
             if (args.Length > 0 && args[0].Contains("metadata"))
             {

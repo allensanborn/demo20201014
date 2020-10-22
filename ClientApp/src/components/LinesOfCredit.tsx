@@ -29,10 +29,11 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
     entityManagerProvider.subscribeComponent(this.manager, this);
 
     // TODO expand client and creditor
-    const query = new EntityQuery("LinesOfCredit");
-    //.expand("Client");
-    //.expand("Creditor");
+    const query = new EntityQuery("LinesOfCredit")
+    //.expand("Client")
+    .expand("Creditor");
     this.manager.executeQuery(query).then((qr) => {
+      console.log("query result", [qr.results]);
       this.setState({
         selected: null,
         LinesOfCredit: qr.results,
@@ -110,9 +111,9 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
         <table className="table" style={{ margin: "auto" }}>
           <thead>
             <tr>
-              {/* <th>Creditor</th> */}
-              <th>Client ID</th>
-              <th>Creditor ID</th>
+              <th>Creditor</th>
+              {/* <th>Client ID</th>
+              <th>Creditor ID</th> */}
 
               {/* <th>First Name</th>
               <th>Last Name</th> */}
@@ -130,18 +131,13 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                 }}
                 onClick={() => this.setState({ selected: loc })}
               >
-                {/* <td>{client.creditor.name}</td> */}
-                
-                <td>{loc.clientId}</td>
-                
-                <td>{loc.creditorId}</td>
-
+                <td>{loc.creditor.name}</td>
                 {/* <td>{loc.client.firstName}</td>
                 <td>{loc.client.lastName}</td> */}
                 <td>{loc.minPaymentPercentage}</td>
                 <td>{loc.balance}</td>
                 
-                <td>{loc.entityAspect.entityState.name}</td>
+                {/* <td>{loc.entityAspect.entityState.name}</td> */}
               </tr>
             ))}
           </tbody>

@@ -9,7 +9,7 @@ using Models;
 namespace demo.Migrations
 {
     [DbContext(typeof(LineOfCreditContext))]
-    [Migration("20201022020613_InitialCreate")]
+    [Migration("20201022132010_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,7 @@ namespace demo.Migrations
 
                     b.HasKey("ClientId");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Client");
                 });
 
             modelBuilder.Entity("Models.Creditor", b =>
@@ -62,7 +62,7 @@ namespace demo.Migrations
 
                     b.HasKey("CreditorId");
 
-                    b.ToTable("Creditors");
+                    b.ToTable("Creditor");
                 });
 
             modelBuilder.Entity("Models.LineOfCredit", b =>
@@ -94,7 +94,7 @@ namespace demo.Migrations
 
                     b.HasIndex("CreditorId");
 
-                    b.ToTable("LinesOfCredit");
+                    b.ToTable("LineOfCredit");
                 });
 
             modelBuilder.Entity("Models.LineOfCredit", b =>

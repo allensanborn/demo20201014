@@ -5,6 +5,10 @@ namespace Models
 {
     public class Client
     {
+        public Client(){
+               LinesOfCredit = new HashSet<LineOfCredit>();
+        }
+        
         public int ClientId { get; set; }
 
         [Required]
