@@ -9,7 +9,7 @@ using Models;
 namespace demo.Migrations
 {
     [DbContext(typeof(LineOfCreditContext))]
-    [Migration("20201022014415_InitialCreate")]
+    [Migration("20201022020613_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,13 +100,13 @@ namespace demo.Migrations
             modelBuilder.Entity("Models.LineOfCredit", b =>
                 {
                     b.HasOne("Models.Client", "Client")
-                        .WithMany()
+                        .WithMany("LinesOfCredit")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Models.Creditor", "Creditor")
-                        .WithMany()
+                        .WithMany("LinesOfCredit")
                         .HasForeignKey("CreditorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

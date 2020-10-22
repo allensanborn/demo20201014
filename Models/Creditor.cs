@@ -10,8 +10,10 @@ namespace Models
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
-        
+
         [Timestamp]
         public byte[] Timestamp { get; set; }
+
+        public virtual ICollection<LineOfCredit> LinesOfCredit { get; set; }
     }
 }

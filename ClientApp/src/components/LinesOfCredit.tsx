@@ -29,7 +29,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
     entityManagerProvider.subscribeComponent(this.manager, this);
 
     // TODO expand client and creditor
-    const query = new EntityQuery("LinesOfCredit");;
+    const query = new EntityQuery("LinesOfCredit");
     //.expand("Client");
     //.expand("Creditor");
     this.manager.executeQuery(query).then((qr) => {

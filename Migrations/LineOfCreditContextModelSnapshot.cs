@@ -98,13 +98,13 @@ namespace demo.Migrations
             modelBuilder.Entity("Models.LineOfCredit", b =>
                 {
                     b.HasOne("Models.Client", "Client")
-                        .WithMany()
+                        .WithMany("LinesOfCredit")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Models.Creditor", "Creditor")
-                        .WithMany()
+                        .WithMany("LinesOfCredit")
                         .HasForeignKey("CreditorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
