@@ -11,7 +11,7 @@ import { Creditor } from './creditor';
 export class LineOfCredit extends BaseEntity  {
 
   /// <code> Place custom code between <code> tags
-  
+  isSelected: boolean;
   /// </code>
 
   // Generated code. Do not place code below this line.

@@ -29,8 +29,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
     entityManagerProvider.subscribeComponent(this.manager, this);
 
     // TODO expand client and creditor
-    const query = new EntityQuery("LinesOfCredit")
-    .expand("Client, Creditor");
+    const query = new EntityQuery("LinesOfCredit").expand("Client, Creditor");
     this.manager.executeQuery(query).then((qr) => {
       console.log("query result", [qr.results]);
       this.setState({
@@ -49,7 +48,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
       LineOfCredit.prototype.entityType
     ) as LineOfCredit;
     cust.clientId = -1;
-    // select the new Client, and add it to the list of Clients
+    // select the new LineOfCredit, and add it to the list of LineOfCredits
     this.setState({
       selected: cust,
       LinesOfCredit: this.state.LinesOfCredit.concat([cust]),
@@ -87,8 +86,24 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
       return (
         <div>
           <h3>Edit</h3>
-          {/* <div>First Name: <input type="text" name="firstName" value={cust.firstName || ''} onChange={cust.handleChange} /></div>
-          <div>Last Name: <input type="text" name="lastName" value={cust.lastName || ''} onChange={cust.handleChange} /></div> */}
+          <div>
+            First Name:{" "}
+            <input
+              type="text"
+              name="firstName"
+              value={cust.firstName || ""}
+              onChange={cust.handleChange}
+            />
+          </div>
+          <div>
+            Last Name:{" "}
+            <input
+              type="text"
+              name="lastName"
+              value={cust.lastName || ""}
+              onChange={cust.handleChange}
+            />
+          </div>
 
           <button
             type="button"
@@ -129,26 +144,32 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                 onClick={() => this.setState({ selected: loc })}
               >
                 <td>
-                  <input type="checkbox" name="brand" />
+                  <input
+                    name="isSelected"
+                    type="checkbox"
+                    checked={loc.isSelected || false}
+                    onChange={loc.handleChange}
+                  />
                 </td>
+
                 <td>{loc.creditor.name}</td>
                 <td>{loc.client.firstName}</td>
                 <td>{loc.client.lastName}</td>
                 <td>{loc.minPaymentPercentage.toFixed(2)} %</td>
                 <td>{loc.balance.toFixed(2)}</td>
-
                 {/* <td>{loc.entityAspect.entityState.name}</td> */}
               </tr>
             ))}
           </tbody>
         </table>
-        <button type="button" className="btn btn-dark" onClick={this.addClient}>
+
+        {/* <button type="button" className="btn btn-dark" onClick={this.addClient}>
           Add Line of Credit
-        </button>
+        </button> */}
+        {/* 
+        {this.renderCustEdit()} */}
 
-        {this.renderCustEdit()}
-
-        <div style={{ marginTop: "20px" }}>
+        {/* <div style={{ marginTop: "20px" }}>
           <button
             type="button"
             className="btn btn-dark"
@@ -165,7 +186,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
           >
             Revert Changes
           </button>
-        </div>
+        </div> */}
       </div>
     );
   }
