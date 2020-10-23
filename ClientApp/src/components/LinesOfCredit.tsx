@@ -130,8 +130,8 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                 <td>{loc.creditor.name}</td>
                 <td>{loc.client.firstName}</td>
                 <td>{loc.client.lastName}</td>
-                <td>{loc.minPaymentPercentage}</td>
-                <td>{loc.balance}</td>
+                <td>{loc.minPaymentPercentage.toFixed(2)} %</td>
+                <td>{loc.balance.toFixed(2)}</td>
                 
                 {/* <td>{loc.entityAspect.entityState.name}</td> */}
               </tr>
