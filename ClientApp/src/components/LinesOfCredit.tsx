@@ -30,8 +30,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
 
     // TODO expand client and creditor
     const query = new EntityQuery("LinesOfCredit")
-    //.expand("Client")
-    .expand("Creditor");
+    .expand("Client, Creditor");
     this.manager.executeQuery(query).then((qr) => {
       console.log("query result", [qr.results]);
       this.setState({
@@ -111,12 +110,9 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
         <table className="table" style={{ margin: "auto" }}>
           <thead>
             <tr>
-              <th>Creditor</th>
-              {/* <th>Client ID</th>
-              <th>Creditor ID</th> */}
-
-              {/* <th>First Name</th>
-              <th>Last Name</th> */}
+              <th>Creditor</th>              
+              <th>First Name</th>
+              <th>Last Name</th>
               <th>Min Pay %</th>
               <th>Balance</th>
             </tr>
@@ -132,8 +128,8 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                 onClick={() => this.setState({ selected: loc })}
               >
                 <td>{loc.creditor.name}</td>
-                {/* <td>{loc.client.firstName}</td>
-                <td>{loc.client.lastName}</td> */}
+                <td>{loc.client.firstName}</td>
+                <td>{loc.client.lastName}</td>
                 <td>{loc.minPaymentPercentage}</td>
                 <td>{loc.balance}</td>
                 
