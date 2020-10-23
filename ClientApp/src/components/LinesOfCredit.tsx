@@ -145,7 +145,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
   renderDebtEdit() {
     let debt = this.state.selected;
 
-    if (debt) {
+    if (debt && (debt.isSelected || debt.lineOfCreditId === -1)) {
       let clientsList =
         this.state.Clients.length > 0 &&
         this.state.Clients.map((client) => {
@@ -255,14 +255,14 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                   onChange={() => {
                     if (this.state.allRowsSelected) {
                       // deselect all rows
-                      this.setState({ allRowsSelected: false });
+                      this.setState({ allRowsSelected: false, selected: null });
                       this.state.LinesOfCredit.forEach((loc) => {
                         loc.isSelected = false;
                       });
                     }
                     // select all rows
                     else {
-                      this.setState({ allRowsSelected: true });
+                      this.setState({ allRowsSelected: true, selected:null });
                       this.state.LinesOfCredit.forEach((loc) => {
                         loc.isSelected = true;
                       });
@@ -275,7 +275,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
               <th>Last Name</th>
               <th>Min Pay %</th>
               <th>Balance</th>
-              <th>State Name</th>
+              {/* <th>State Name</th> */}
             </tr>
           </thead>
           <tbody>
@@ -311,7 +311,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                 <td>{loc.client.lastName || ""}</td>
                 <td>{loc.minPaymentPercentage.toFixed(2) || ""} %</td>
                 <td>{loc.balance.toFixed(2) || ""}</td>
-                <td>{loc.entityAspect.entityState.name}</td>
+                {/* <td>{loc.entityAspect.entityState.name}</td> */}
               </tr>
             ))}
           </tbody>
@@ -331,16 +331,17 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                 </button>
               </td>
             </tr>
-            <tr>
+            <tr >
+              <td colSpan={5}>Total: </td>
               <td>
-                <span>Total: ${this.computedBalance()}</span>
+                <span>${this.computedBalance()}</span>
               </td>
             </tr>
             <tr>
-              <td>
+              <td colSpan={2}>
                 <span>Total Row Count: {this.totalRowCount()}</span>
               </td>
-              <td>
+              <td colSpan={3}>
                 <span>Checked Row Count: {this.checkedRowCount()}</span>
               </td>
             </tr>
