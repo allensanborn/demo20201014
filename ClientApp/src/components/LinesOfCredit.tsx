@@ -4,6 +4,7 @@ import { entityManagerProvider } from "../model/entity-manager-provider";
 import { LineOfCredit } from "../model/line-of-credit";
 import { Client } from "../model/client";
 import { Creditor } from "../model/creditor";
+import { allowedNodeEnvironmentFlags } from "process";
 
 interface LineOfCreditState {
   LinesOfCredit: LineOfCredit[];
@@ -90,21 +91,25 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
   }
 
   saveChanges() {
-    var blah = this.manager.getChanges();
-    console.log("Changes", [blah]);
+    var changes = this.manager.getChanges();
+    console.log("Changes", [changes]);
     this.manager
       .saveChanges()
       .then(() => {
         // refresh Client list to remove deleted Clients
+        let locs = this.manager.getEntities("LineOfCredit") as LineOfCredit[];
+
         this.setState({
           selected: null,
-          LinesOfCredit: this.manager.getEntities(
-            "LineOfCredit"
-          ) as LineOfCredit[],
+          LinesOfCredit: locs,
+          allRowsSelected:
+            this.state.allRowsSelected && locs.length === 0
+              ? false
+              : this.state.allRowsSelected,
         });
       })
-      .catch((asdf) => {
-        console.log(asdf);
+      .catch((exception) => {
+        console.log(exception);
       });
   }
 
