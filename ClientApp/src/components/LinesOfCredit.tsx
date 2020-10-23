@@ -37,12 +37,13 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
     this.rejectChanges = this.rejectChanges.bind(this);
     this.addDebt = this.addDebt.bind(this);
     this.remove = this.remove.bind(this);
+    this.onChangeClient = this.onChangeClient.bind(this);
+    this.onChangeCreditor = this.onChangeCreditor.bind(this);
   }
 
   componentDidMount() {
     entityManagerProvider.subscribeComponent(this.manager, this);
 
-    // TODO expand client and creditor
     const query = new EntityQuery("LinesOfCredit").expand("Client, Creditor");
     this.manager.executeQuery(query).then((qr) => {
       console.log("query result", [qr.results]);
@@ -67,24 +68,26 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
     entityManagerProvider.unsubscribeComponent(this.manager, this);
   }
 
-  addDebt() {}
-  // addClient() {
-  //   let cust = this.manager.createEntity(
-  //     LineOfCredit.prototype.entityType
-  //   ) as LineOfCredit;
-  //   cust.clientId = -1;
-  //   // select the new LineOfCredit, and add it to the list of LineOfCredits
-  //   this.setState({
-  //     selected: cust,
-  //     LinesOfCredit: this.state.LinesOfCredit.concat([cust]),
-  //   });
-  // }
+  addDebt() {
+    let debt = this.manager.createEntity(
+      LineOfCredit.prototype.entityType
+    ) as LineOfCredit;
+    debt.lineOfCreditId = -1;
+    debt.balance = 0;
+    debt.minPaymentPercentage = 0;
+    this.setState({
+      selected: debt,
+      LinesOfCredit: this.state.LinesOfCredit.concat([debt]),
+    });
+  }
 
   remove(ent: LineOfCredit) {
     ent.entityAspect.setDeleted();
   }
 
   saveChanges() {
+    var blah = this.manager.getChanges();
+    console.log("Changes", [blah]);
     this.manager.saveChanges().then(() => {
       // refresh Client list to remove deleted Clients
       this.setState({
@@ -93,6 +96,10 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
           "LineOfCredit"
         ) as LineOfCredit[],
       });
+    }).catch((asdf)=>{
+        console.log(asdf);
+        
+    
     });
   }
 
@@ -105,40 +112,69 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
     });
   }
 
+  onChangeClient(event) {
+    let clientId = event.target.value;
+    let client = this.manager.getEntityByKey(
+      "Client",
+      clientId
+    ) as Client;
+    let lineOfCredit = this.state.selected;
+    lineOfCredit.client = client;
+
+    this.setState({
+      selected: lineOfCredit,
+    });    
+  }
+
+  onChangeCreditor(event) {
+    let creditorId = event.target.value;
+    let creditor = this.manager.getEntityByKey(
+      "Creditor",
+      creditorId
+    ) as Creditor;
+    let lineOfCredit = this.state.selected;
+    lineOfCredit.creditor = creditor;
+
+    this.setState({
+      selected: lineOfCredit,
+    });    
+  }
+
   renderDebtEdit() {
     let debt = this.state.selected;
-    let clientsList =
-      this.state.Clients.length > 0 &&
-      this.state.Clients.map((client) => {
-        return (
-          <option key={client.clientId} value={client.clientId}>
-            {client.lastName}, {client.firstName}
-          </option>
-        );
-      });
+    if (debt) {
+      let clientsList =
+        this.state.Clients.length > 0 &&
+        this.state.Clients.map((client) => {
+          return (
+            <option key={client.clientId} value={client.clientId}>
+              {client.lastName}, {client.firstName}
+            </option>
+          );
+        });
 
-    let creditorsList =
-      this.state.Creditors.length > 0 &&
-      this.state.Creditors.map((creditor) => {
-        return (
-          <option key={creditor.creditorId} value={creditor.creditorId}>
-            {creditor.name}
-          </option>
-        );
-      });
+      let creditorsList =
+        this.state.Creditors.length > 0 &&
+        this.state.Creditors.map((creditor) => {
+          return (
+            <option key={creditor.creditorId} value={creditor.creditorId}>
+              {creditor.name}
+            </option>
+          );
+        });
 
-    if (!debt) {
       return (
         <div>
           <h3>Edit</h3>
           <div>
-            <select>
+            <select onChange={this.onChangeClient}>
+              {" "}
               <option key={-1} value={-1}>
                 Select a Client
               </option>
               {clientsList}
             </select>
-            <select>
+            <select onChange={this.onChangeCreditor}>
               <option key={-1} value={-1}>
                 Select a Creditor
               </option>
@@ -222,7 +258,8 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
           </thead>
           <tbody>
             {this.state.LinesOfCredit.filter((loc) => {
-              if (loc.entityAspect.entityState.toString() === "Deleted") {
+              if (loc.entityAspect.entityState.toString() === "Deleted" 
+              || loc.entityAspect.entityState.toString()=== "Added") {
                 return false;
               } else {
                 return true;
