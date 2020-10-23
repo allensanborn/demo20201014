@@ -124,10 +124,17 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
 
   computedBalance = () =>
     this.state.LinesOfCredit.reduce(
-      (sum, lineOfCredit) => sum + (lineOfCredit.isSelected ? lineOfCredit.balance : 0),
+      (sum, lineOfCredit) =>
+        sum + (lineOfCredit.isSelected ? lineOfCredit.balance : 0),
       0
     );
-
+  totalRowCount = () => this.state.LinesOfCredit.length;
+  checkedRowCount = () =>
+    this.state.LinesOfCredit.reduce(
+      (sum, lineOfCredit) =>
+        sum + (lineOfCredit.isSelected ? 1 : 0),
+      0
+    );
   render() {
     return (
       <div>
@@ -211,15 +218,15 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
             </tr>
             <tr>
               <td>
-                <span>Total Row Count: {this.state.totalRowCount}</span>
+                <span>Total Row Count: {this.totalRowCount()}</span>
               </td>
               <td>
-                <span>Checked Row Count: {this.state.totalRowCount}</span>
+                <span>Checked Row Count: {this.checkedRowCount()}</span>
               </td>
             </tr>
           </tfoot>
         </table>
-{/* 
+        {/* 
         {this.renderCustEdit()} */}
 
         <div style={{ marginTop: "20px" }}>
