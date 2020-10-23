@@ -51,10 +51,10 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
         LinesOfCredit: qr.results,
       });
 
-        const query2 = new EntityQuery("Clients");
-        this.manager.executeQuery(query2).then((qr)=>{
-          this.setState({Clients:qr.results})
-        });
+      const query2 = new EntityQuery("Clients");
+      this.manager.executeQuery(query2).then((qr) => {
+        this.setState({ Clients: qr.results });
+      });
 
       //   const query3 = new EntityQuery("Creditors");
       //   this.manager.executeQuery(query3).then((qr)=>{
@@ -105,13 +105,31 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
     });
   }
 
-  renderCustEdit() {
+  renderDebtEdit() {
     let debt = this.state.selected;
+    let clientsList =
+      this.state.Clients.length > 0 &&
+      this.state.Clients.map((client) => {
+        return (
+          <option key={client.clientId} value={client.clientId}>
+            {client.lastName}, {client.firstName}
+          </option>
+        );
+      });
+
     if (debt) {
       return (
         <div>
           <h3>Edit</h3>
-          {/* <Select options={Clients} /> */}
+          <div>
+            <select>
+              <option key={-1} value={-1}>
+                Select a Client
+              </option>
+              {clientsList}
+            </select>
+          </div>
+
           {/* <div>
             First Name:{" "}
             <input
@@ -270,8 +288,8 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
             </tr>
           </tfoot>
         </table>
-        {/* 
-        {this.renderCustEdit()} */}
+
+        {this.renderDebtEdit()}
         <div style={{ marginTop: "20px" }}>
           <button
             type="button"
