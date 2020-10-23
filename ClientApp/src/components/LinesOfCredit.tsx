@@ -69,15 +69,19 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
   }
 
   addDebt() {
-    let debt = this.manager.createEntity(
-      LineOfCredit.prototype.entityType
-    ) as LineOfCredit;
+    let debt = this.manager.getEntityByKey("LineOfCredit", -1) as LineOfCredit;
+    if (!debt) {
+      debt = this.manager.createEntity(
+        LineOfCredit.prototype.entityType
+      ) as LineOfCredit;
+    }
+
     debt.lineOfCreditId = -1;
     debt.balance = 0;
     debt.minPaymentPercentage = 0;
     this.setState({
       selected: debt,
-      LinesOfCredit: this.state.LinesOfCredit.concat([debt]),
+      //LinesOfCredit: this.state.LinesOfCredit.concat([debt]),
     });
   }
 
@@ -88,19 +92,20 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
   saveChanges() {
     var blah = this.manager.getChanges();
     console.log("Changes", [blah]);
-    this.manager.saveChanges().then(() => {
-      // refresh Client list to remove deleted Clients
-      this.setState({
-        selected: null,
-        LinesOfCredit: this.manager.getEntities(
-          "LineOfCredit"
-        ) as LineOfCredit[],
-      });
-    }).catch((asdf)=>{
+    this.manager
+      .saveChanges()
+      .then(() => {
+        // refresh Client list to remove deleted Clients
+        this.setState({
+          selected: null,
+          LinesOfCredit: this.manager.getEntities(
+            "LineOfCredit"
+          ) as LineOfCredit[],
+        });
+      })
+      .catch((asdf) => {
         console.log(asdf);
-        
-    
-    });
+      });
   }
 
   rejectChanges() {
@@ -114,16 +119,13 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
 
   onChangeClient(event) {
     let clientId = event.target.value;
-    let client = this.manager.getEntityByKey(
-      "Client",
-      clientId
-    ) as Client;
+    let client = this.manager.getEntityByKey("Client", clientId) as Client;
     let lineOfCredit = this.state.selected;
     lineOfCredit.client = client;
 
     this.setState({
       selected: lineOfCredit,
-    });    
+    });
   }
 
   onChangeCreditor(event) {
@@ -137,11 +139,12 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
 
     this.setState({
       selected: lineOfCredit,
-    });    
+    });
   }
 
   renderDebtEdit() {
     let debt = this.state.selected;
+
     if (debt) {
       let clientsList =
         this.state.Clients.length > 0 &&
@@ -166,20 +169,39 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
       return (
         <div>
           <h3>Edit</h3>
+
           <div>
-            <select onChange={this.onChangeClient}>
+            <select
+              value={this.state.selected.clientId || -1}
+              onChange={this.onChangeClient}
+            >
               {" "}
               <option key={-1} value={-1}>
                 Select a Client
               </option>
               {clientsList}
             </select>
-            <select onChange={this.onChangeCreditor}>
+            <select
+              value={this.state.selected.creditorId || -1}
+              onChange={this.onChangeCreditor}
+            >
               <option key={-1} value={-1}>
                 Select a Creditor
               </option>
               {creditorsList}
             </select>
+            <input
+              name="minPaymentPercentage"
+              type="text"
+              value={this.state.selected.minPaymentPercentage}
+              onChange={this.state.selected.handleChange}
+            />
+            <input
+              name="balance"
+              type="text"
+              value={this.state.selected.balance}
+              onChange={this.state.selected.handleChange}
+            />
           </div>
 
           <button
@@ -258,8 +280,10 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
           </thead>
           <tbody>
             {this.state.LinesOfCredit.filter((loc) => {
-              if (loc.entityAspect.entityState.toString() === "Deleted" 
-              || loc.entityAspect.entityState.toString()=== "Added") {
+              if (
+                loc.entityAspect.entityState.toString() === "Deleted" ||
+                loc.entityAspect.entityState.toString() === "Added"
+              ) {
                 return false;
               } else {
                 return true;
@@ -328,7 +352,10 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
           <button
             type="button"
             className="btn btn-success"
-            disabled={!this.manager.hasChanges()}
+            disabled={
+              !this.manager.hasChanges() ||
+              this.state.selected.entityAspect.hasValidationErrors
+            }
             onClick={this.saveChanges}
           >
             Save Changes
