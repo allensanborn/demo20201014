@@ -145,7 +145,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
   renderDebtEdit() {
     let debt = this.state.selected;
 
-    if (debt && (debt.isSelected || debt.lineOfCreditId === -1)) {
+    if (debt) {
       let clientsList =
         this.state.Clients.length > 0 &&
         this.state.Clients.map((client) => {
@@ -168,41 +168,63 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
 
       return (
         <div>
-          <h3>Edit</h3>
-
-          <div>
-            <select
-              value={this.state.selected.clientId || -1}
-              onChange={this.onChangeClient}
-            >
-              {" "}
-              <option key={-1} value={-1}>
-                Select a Client
-              </option>
-              {clientsList}
-            </select>
-            <select
-              value={this.state.selected.creditorId || -1}
-              onChange={this.onChangeCreditor}
-            >
-              <option key={-1} value={-1}>
-                Select a Creditor
-              </option>
-              {creditorsList}
-            </select>
-            <input
-              name="minPaymentPercentage"
-              type="text"
-              value={this.state.selected.minPaymentPercentage}
-              onChange={this.state.selected.handleChange}
-            />
-            <input
-              name="balance"
-              type="text"
-              value={this.state.selected.balance}
-              onChange={this.state.selected.handleChange}
-            />
-          </div>
+          {this.state.selected.lineOfCreditId === -1 ? (
+            <h3>Add</h3>
+          ) : (
+            <h3>Edit</h3>
+          )}
+          <form>
+            <div className="form-row">
+              <div className="form-group col-md-3">
+                <label>Client</label>
+                <select
+                  className="form-control"
+                  value={this.state.selected.clientId || -1}
+                  onChange={this.onChangeClient}
+                >
+                  {" "}
+                  <option key={-1} value={-1}>
+                    Select a Client
+                  </option>
+                  {clientsList}
+                </select>
+              </div>
+              <div className="form-group col-md-3">
+                <label>Creditor</label>
+                <select
+                  className="form-control"
+                  value={this.state.selected.creditorId || -1}
+                  onChange={this.onChangeCreditor}
+                >
+                  <option key={-1} value={-1}>
+                    Select a Creditor
+                  </option>
+                  {creditorsList}
+                </select>
+              </div>
+              <div className="form-group col-md-3">
+                <label>Minimum Payment %</label>
+                <input
+                  className="form-control"
+                  name="minPaymentPercentage"
+                  type="text"
+                  value={this.state.selected.minPaymentPercentage}
+                  onChange={this.state.selected.handleChange}
+                />
+              </div>
+              <div className="form-group col-md-3">
+                <label>Balance</label>
+                <input
+                  className="form-control"
+                  name="balance"
+                  type="text"
+                  value={this.state.selected.balance}
+                  onChange={this.state.selected.handleChange}
+                />
+              </div>
+            </div>
+          </form>
+          <div></div>
 
           <button
             type="button"
@@ -262,7 +284,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                     }
                     // select all rows
                     else {
-                      this.setState({ allRowsSelected: true, selected:null });
+                      this.setState({ allRowsSelected: true, selected: null });
                       this.state.LinesOfCredit.forEach((loc) => {
                         loc.isSelected = true;
                       });
@@ -295,7 +317,9 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                   backgroundColor:
                     loc === this.state.selected ? "lightgray" : "white",
                 }}
-                onClick={() => this.setState({ selected: loc })}
+                onClick={() => {
+                  this.setState({ selected: loc });
+                }}
               >
                 <td>
                   <input
@@ -317,7 +341,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={3}>
+              <td colSpan={5}>
                 <button className="btn btn-primary" onClick={this.addDebt}>
                   {" "}
                   Add Debt
@@ -327,11 +351,31 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                   onClick={this.removeSelectedDebts}
                 >
                   {" "}
-                  Remove Debt
+                  Remove Checked Debt(s)
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  disabled={
+                    !this.manager.hasChanges() ||
+                    (this.state.selected &&
+                      this.state.selected.entityAspect.hasValidationErrors)
+                  }
+                  onClick={this.saveChanges}
+                >
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-dark"
+                  disabled={!this.manager.hasChanges()}
+                  onClick={this.rejectChanges}
+                >
+                  Revert Changes
                 </button>
               </td>
             </tr>
-            <tr >
+            <tr className="totalRow">
               <td colSpan={5}>Total: </td>
               <td>
                 <span>${this.computedBalance()}</span>
@@ -349,27 +393,6 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
         </table>
 
         {this.renderDebtEdit()}
-        <div style={{ marginTop: "20px" }}>
-          <button
-            type="button"
-            className="btn btn-success"
-            disabled={
-              !this.manager.hasChanges() ||
-              this.state.selected.entityAspect.hasValidationErrors
-            }
-            onClick={this.saveChanges}
-          >
-            Save Changes
-          </button>
-          <button
-            type="button"
-            className="btn btn-dark"
-            disabled={!this.manager.hasChanges()}
-            onClick={this.rejectChanges}
-          >
-            Revert Changes
-          </button>
-        </div>
       </div>
     );
   }
