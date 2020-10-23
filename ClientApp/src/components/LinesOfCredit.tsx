@@ -7,6 +7,9 @@ interface LineOfCreditState {
   LinesOfCredit: LineOfCredit[];
   selected: LineOfCredit;
   allRowsSelected: boolean;
+  totalRowCount: number;
+  checkedRowCount: number;
+  balance: number;
 }
 
 export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
@@ -82,18 +85,19 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
   }
 
   renderCustEdit() {
-    let cust = this.state.selected;
-    if (cust) {
+    let debt = this.state.selected;
+    if (debt) {
       return (
         <div>
           <h3>Edit</h3>
-          <div>
+          <select></select>
+          {/* <div>
             First Name:{" "}
             <input
               type="text"
               name="firstName"
-              value={cust.firstName || ""}
-              onChange={cust.handleChange}
+              value={debt.firstName || ""}
+              onChange={debt.handleChange}
             />
           </div>
           <div>
@@ -101,15 +105,15 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
             <input
               type="text"
               name="lastName"
-              value={cust.lastName || ""}
-              onChange={cust.handleChange}
+              value={debt.lastName || ""}
+              onChange={debt.handleChange}
             />
-          </div>
+          </div> */}
 
           <button
             type="button"
             className="btn btn-dark"
-            onClick={this.remove.bind(this, cust)}
+            onClick={this.remove.bind(this, debt)}
           >
             Delete
           </button>
@@ -117,6 +121,12 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
       );
     }
   }
+
+  computedBalance = () =>
+    this.state.LinesOfCredit.reduce(
+      (sum, lineOfCredit) => sum + (lineOfCredit.isSelected ? lineOfCredit.balance : 0),
+      0
+    );
 
   render() {
     return (
@@ -141,11 +151,11 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                     }
                     // select all rows
                     else {
-                      this.setState({ allRowsSelected: true })
+                      this.setState({ allRowsSelected: true });
                       this.state.LinesOfCredit.forEach((loc) => {
                         loc.isSelected = true;
                       });
-                    };
+                    }
                   }}
                 />
               </th>
@@ -186,18 +196,33 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
           </tbody>
           <tfoot>
             <tr>
-              <td>FOOTER</td>
+              <td colSpan={3}>
+                <button className="btn btn-primary" onClick={this.addClient}>
+                  {" "}
+                  Add Debt
+                </button>
+                <button className="btn btn-danger"> Remove Debt</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span>Total: ${this.computedBalance()}</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span>Total Row Count: {this.state.totalRowCount}</span>
+              </td>
+              <td>
+                <span>Checked Row Count: {this.state.totalRowCount}</span>
+              </td>
             </tr>
           </tfoot>
         </table>
-
-        {/* <button type="button" className="btn btn-dark" onClick={this.addClient}>
-          Add Line of Credit
-        </button> */}
-        {/* 
+{/* 
         {this.renderCustEdit()} */}
 
-        {/* <div style={{ marginTop: "20px" }}>
+        <div style={{ marginTop: "20px" }}>
           <button
             type="button"
             className="btn btn-dark"
@@ -214,7 +239,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
           >
             Revert Changes
           </button>
-        </div> */}
+        </div>
       </div>
     );
   }
