@@ -6,6 +6,7 @@ import { entityManagerProvider } from "../model/entity-manager-provider";
 interface LineOfCreditState {
   LinesOfCredit: LineOfCredit[];
   selected: LineOfCredit;
+  allRowsSelected: boolean;
 }
 
 export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
@@ -125,7 +126,29 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
         <table className="table" style={{ margin: "auto" }}>
           <thead>
             <tr>
-              <th></th>
+              <th>
+                <input
+                  name="selectAllRows"
+                  type="checkbox"
+                  checked={this.state.allRowsSelected || false}
+                  onChange={() => {
+                    if (this.state.allRowsSelected) {
+                      // deselect all rows
+                      this.setState({ allRowsSelected: false });
+                      this.state.LinesOfCredit.forEach((loc) => {
+                        loc.isSelected = false;
+                      });
+                    }
+                    // select all rows
+                    else {
+                      this.setState({ allRowsSelected: true })
+                      this.state.LinesOfCredit.forEach((loc) => {
+                        loc.isSelected = true;
+                      });
+                    };
+                  }}
+                />
+              </th>
               <th>Creditor</th>
               <th>First Name</th>
               <th>Last Name</th>
@@ -161,6 +184,11 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
               </tr>
             ))}
           </tbody>
+          <tfoot>
+            <tr>
+              <td>FOOTER</td>
+            </tr>
+          </tfoot>
         </table>
 
         {/* <button type="button" className="btn btn-dark" onClick={this.addClient}>
