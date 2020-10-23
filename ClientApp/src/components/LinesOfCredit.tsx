@@ -1,10 +1,14 @@
 import React from "react";
 import { EntityManager, EntityQuery } from "breeze-client";
-import { LineOfCredit } from "../model/line-of-credit";
 import { entityManagerProvider } from "../model/entity-manager-provider";
+import { LineOfCredit } from "../model/line-of-credit";
+import { Client } from "../model/client";
+// import { Creditor } from "../model/creditor";
 
 interface LineOfCreditState {
   LinesOfCredit: LineOfCredit[];
+  Clients: Client[];
+  // Creditors: Creditor[];
   selected: LineOfCredit;
   allRowsSelected: boolean;
   totalRowCount: number;
@@ -19,13 +23,19 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
     super(props);
     this.state = {
       LinesOfCredit: [] as LineOfCredit[],
+      Clients: [] as Client[],
+      // Creditors: [] as Creditor[],
       selected: null as LineOfCredit,
+      allRowsSelected: false,
+      totalRowCount: 0,
+      checkedRowCount: 0,
+      balance: 0,
     };
     this.manager = entityManagerProvider.newManager();
 
     this.saveChanges = this.saveChanges.bind(this);
     this.rejectChanges = this.rejectChanges.bind(this);
-    this.addClient = this.addClient.bind(this);
+    this.addDebt = this.addDebt.bind(this);
     this.remove = this.remove.bind(this);
   }
 
@@ -40,6 +50,16 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
         selected: null,
         LinesOfCredit: qr.results,
       });
+
+        const query2 = new EntityQuery("Clients");
+        this.manager.executeQuery(query2).then((qr)=>{
+          this.setState({Clients:qr.results})
+        });
+
+      //   const query3 = new EntityQuery("Creditors");
+      //   this.manager.executeQuery(query3).then((qr)=>{
+      //     this.setState({Creditors:qr.results});
+      //   })
     });
   }
 
@@ -47,17 +67,18 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
     entityManagerProvider.unsubscribeComponent(this.manager, this);
   }
 
-  addClient() {
-    let cust = this.manager.createEntity(
-      LineOfCredit.prototype.entityType
-    ) as LineOfCredit;
-    cust.clientId = -1;
-    // select the new LineOfCredit, and add it to the list of LineOfCredits
-    this.setState({
-      selected: cust,
-      LinesOfCredit: this.state.LinesOfCredit.concat([cust]),
-    });
-  }
+  addDebt() {}
+  // addClient() {
+  //   let cust = this.manager.createEntity(
+  //     LineOfCredit.prototype.entityType
+  //   ) as LineOfCredit;
+  //   cust.clientId = -1;
+  //   // select the new LineOfCredit, and add it to the list of LineOfCredits
+  //   this.setState({
+  //     selected: cust,
+  //     LinesOfCredit: this.state.LinesOfCredit.concat([cust]),
+  //   });
+  // }
 
   remove(ent: LineOfCredit) {
     ent.entityAspect.setDeleted();
@@ -90,7 +111,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
       return (
         <div>
           <h3>Edit</h3>
-          <select></select>
+          {/* <Select options={Clients} /> */}
           {/* <div>
             First Name:{" "}
             <input
@@ -139,10 +160,8 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
 
   removeSelectedDebts = () => {
     this.state.LinesOfCredit.forEach((loc) => {
-      if(loc.isSelected){
-        console.log(loc)
+      if (loc.isSelected) {
         loc.entityAspect.setDeleted();
-        console.log(loc)
       }
     });
   };
@@ -187,16 +206,13 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
             </tr>
           </thead>
           <tbody>
-            {this.state.LinesOfCredit
-            .filter((loc)=>{              
-              if(loc.entityAspect.entityState.toString() === "Deleted"){
-                return false;          
-              }else{
+            {this.state.LinesOfCredit.filter((loc) => {
+              if (loc.entityAspect.entityState.toString() === "Deleted") {
+                return false;
+              } else {
                 return true;
               }
-            })
-            .map((loc) => (
-              
+            }).map((loc) => (
               <tr
                 key={loc.lineOfCreditId}
                 style={{
@@ -214,11 +230,11 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                   />
                 </td>
 
-                <td>{loc.creditor.name||''}</td>
-                <td>{loc.client.firstName||''}</td>
-                <td>{loc.client.lastName||''}</td>
-                <td>{loc.minPaymentPercentage.toFixed(2)||''} %</td>
-                <td>{loc.balance.toFixed(2)||''}</td>
+                <td>{loc.creditor.name || ""}</td>
+                <td>{loc.client.firstName || ""}</td>
+                <td>{loc.client.lastName || ""}</td>
+                <td>{loc.minPaymentPercentage.toFixed(2) || ""} %</td>
+                <td>{loc.balance.toFixed(2) || ""}</td>
                 <td>{loc.entityAspect.entityState.name}</td>
               </tr>
             ))}
@@ -226,7 +242,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
           <tfoot>
             <tr>
               <td colSpan={3}>
-                <button className="btn btn-primary" onClick={this.addClient}>
+                <button className="btn btn-primary" onClick={this.addDebt}>
                   {" "}
                   Add Debt
                 </button>
