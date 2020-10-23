@@ -128,20 +128,32 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
         sum + (lineOfCredit.isSelected ? lineOfCredit.balance : 0),
       0
     );
+
   totalRowCount = () => this.state.LinesOfCredit.length;
+
   checkedRowCount = () =>
     this.state.LinesOfCredit.reduce(
-      (sum, lineOfCredit) =>
-        sum + (lineOfCredit.isSelected ? 1 : 0),
+      (sum, lineOfCredit) => sum + (lineOfCredit.isSelected ? 1 : 0),
       0
     );
+
+  removeSelectedDebts = () => {
+    this.state.LinesOfCredit.forEach((loc) => {
+      if(loc.isSelected){
+        console.log(loc)
+        loc.entityAspect.setDeleted();
+        console.log(loc)
+      }
+    });
+  };
+
   render() {
     return (
       <div>
         <h1>Lines of Credit</h1>
 
-        <table className="table" style={{ margin: "auto" }}>
-          <thead>
+        <table className="table table-striped" style={{ margin: "auto" }}>
+          <thead className="thead-dark">
             <tr>
               <th>
                 <input
@@ -171,10 +183,20 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
               <th>Last Name</th>
               <th>Min Pay %</th>
               <th>Balance</th>
+              <th>State Name</th>
             </tr>
           </thead>
           <tbody>
-            {this.state.LinesOfCredit.map((loc) => (
+            {this.state.LinesOfCredit
+            .filter((loc)=>{              
+              if(loc.entityAspect.entityState.toString() === "Deleted"){
+                return false;          
+              }else{
+                return true;
+              }
+            })
+            .map((loc) => (
+              
               <tr
                 key={loc.lineOfCreditId}
                 style={{
@@ -192,12 +214,12 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                   />
                 </td>
 
-                <td>{loc.creditor.name}</td>
-                <td>{loc.client.firstName}</td>
-                <td>{loc.client.lastName}</td>
-                <td>{loc.minPaymentPercentage.toFixed(2)} %</td>
-                <td>{loc.balance.toFixed(2)}</td>
-                {/* <td>{loc.entityAspect.entityState.name}</td> */}
+                <td>{loc.creditor.name||''}</td>
+                <td>{loc.client.firstName||''}</td>
+                <td>{loc.client.lastName||''}</td>
+                <td>{loc.minPaymentPercentage.toFixed(2)||''} %</td>
+                <td>{loc.balance.toFixed(2)||''}</td>
+                <td>{loc.entityAspect.entityState.name}</td>
               </tr>
             ))}
           </tbody>
@@ -208,7 +230,13 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                   {" "}
                   Add Debt
                 </button>
-                <button className="btn btn-danger"> Remove Debt</button>
+                <button
+                  className="btn btn-danger"
+                  onClick={this.removeSelectedDebts}
+                >
+                  {" "}
+                  Remove Debt
+                </button>
               </td>
             </tr>
             <tr>
@@ -228,11 +256,10 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
         </table>
         {/* 
         {this.renderCustEdit()} */}
-
         <div style={{ marginTop: "20px" }}>
           <button
             type="button"
-            className="btn btn-dark"
+            className="btn btn-success"
             disabled={!this.manager.hasChanges()}
             onClick={this.saveChanges}
           >
