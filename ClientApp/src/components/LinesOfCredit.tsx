@@ -3,12 +3,12 @@ import { EntityManager, EntityQuery } from "breeze-client";
 import { entityManagerProvider } from "../model/entity-manager-provider";
 import { LineOfCredit } from "../model/line-of-credit";
 import { Client } from "../model/client";
-// import { Creditor } from "../model/creditor";
+import { Creditor } from "../model/creditor";
 
 interface LineOfCreditState {
   LinesOfCredit: LineOfCredit[];
   Clients: Client[];
-  // Creditors: Creditor[];
+  Creditors: Creditor[];
   selected: LineOfCredit;
   allRowsSelected: boolean;
   totalRowCount: number;
@@ -24,7 +24,7 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
     this.state = {
       LinesOfCredit: [] as LineOfCredit[],
       Clients: [] as Client[],
-      // Creditors: [] as Creditor[],
+      Creditors: [] as Creditor[],
       selected: null as LineOfCredit,
       allRowsSelected: false,
       totalRowCount: 0,
@@ -56,10 +56,10 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
         this.setState({ Clients: qr.results });
       });
 
-      //   const query3 = new EntityQuery("Creditors");
-      //   this.manager.executeQuery(query3).then((qr)=>{
-      //     this.setState({Creditors:qr.results});
-      //   })
+      const query3 = new EntityQuery("Creditors");
+      this.manager.executeQuery(query3).then((qr) => {
+        this.setState({ Creditors: qr.results });
+      });
     });
   }
 
@@ -117,7 +117,17 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
         );
       });
 
-    if (debt) {
+    let creditorsList =
+      this.state.Creditors.length > 0 &&
+      this.state.Creditors.map((creditor) => {
+        return (
+          <option key={creditor.creditorId} value={creditor.creditorId}>
+            {creditor.name}
+          </option>
+        );
+      });
+
+    if (!debt) {
       return (
         <div>
           <h3>Edit</h3>
@@ -128,26 +138,13 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
               </option>
               {clientsList}
             </select>
+            <select>
+              <option key={-1} value={-1}>
+                Select a Creditor
+              </option>
+              {creditorsList}
+            </select>
           </div>
-
-          {/* <div>
-            First Name:{" "}
-            <input
-              type="text"
-              name="firstName"
-              value={debt.firstName || ""}
-              onChange={debt.handleChange}
-            />
-          </div>
-          <div>
-            Last Name:{" "}
-            <input
-              type="text"
-              name="lastName"
-              value={debt.lastName || ""}
-              onChange={debt.handleChange}
-            />
-          </div> */}
 
           <button
             type="button"
