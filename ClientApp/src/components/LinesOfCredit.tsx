@@ -110,7 +110,8 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
         <table className="table" style={{ margin: "auto" }}>
           <thead>
             <tr>
-              <th>Creditor</th>              
+              <th></th>
+              <th>Creditor</th>
               <th>First Name</th>
               <th>Last Name</th>
               <th>Min Pay %</th>
@@ -123,16 +124,19 @@ export class LinesOfCredit extends React.Component<any, LineOfCreditState> {
                 key={loc.lineOfCreditId}
                 style={{
                   backgroundColor:
-                  loc === this.state.selected ? "lightgray" : "white",
+                    loc === this.state.selected ? "lightgray" : "white",
                 }}
                 onClick={() => this.setState({ selected: loc })}
               >
+                <td>
+                  <input type="checkbox" name="brand" />
+                </td>
                 <td>{loc.creditor.name}</td>
                 <td>{loc.client.firstName}</td>
                 <td>{loc.client.lastName}</td>
                 <td>{loc.minPaymentPercentage.toFixed(2)} %</td>
                 <td>{loc.balance.toFixed(2)}</td>
-                
+
                 {/* <td>{loc.entityAspect.entityState.name}</td> */}
               </tr>
             ))}
