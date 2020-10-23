@@ -18,7 +18,7 @@ const Home = () => (
         fetch(url, options).then((res) => console.log(res));
       }}
     >
-      Load Seed Data if there are no Lines of Credit
+      Delete all data an reseed the database
     </button>
 
     <h1>Hello, world!</h1>
