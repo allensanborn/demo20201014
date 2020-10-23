@@ -1,21 +1,20 @@
-import React from 'react';
-import { EntityManager, EntityQuery } from 'breeze-client';
-import { Creditor } from '../model/creditor';
-import { entityManagerProvider } from '../model/entity-manager-provider';
+import React from "react";
+import { EntityManager, EntityQuery } from "breeze-client";
+import { Creditor } from "../model/creditor";
+import { entityManagerProvider } from "../model/entity-manager-provider";
 
 interface CreditorState {
   Creditors: Creditor[];
   selected: Creditor;
 }
 export class Creditors extends React.Component<any, CreditorState> {
-
   manager: EntityManager;
 
   constructor(props: any) {
     super(props);
     this.state = {
       Creditors: [] as Creditor[],
-      selected: null as unknown as Creditor
+      selected: (null as unknown) as Creditor,
     };
     this.manager = entityManagerProvider.newManager();
 
@@ -28,11 +27,11 @@ export class Creditors extends React.Component<any, CreditorState> {
   componentDidMount() {
     entityManagerProvider.subscribeComponent(this.manager, this);
 
-    const query = new EntityQuery("Creditors");//.expand("orders");
-    this.manager.executeQuery(query).then(qr => {
+    const query = new EntityQuery("Creditors"); //.expand("orders");
+    this.manager.executeQuery(query).then((qr) => {
       this.setState({
         selected: null,
-        Creditors: qr.results
+        Creditors: qr.results,
       });
     });
   }
@@ -42,13 +41,15 @@ export class Creditors extends React.Component<any, CreditorState> {
   }
 
   addCreditor() {
-    let cust = this.manager.createEntity(Creditor.prototype.entityType) as Creditor;
+    let cust = this.manager.createEntity(
+      Creditor.prototype.entityType
+    ) as Creditor;
     cust.creditorId = -1;
     // select the new Creditor, and add it to the list of Creditors
     this.setState({
       selected: cust,
-      Creditors: this.state.Creditors.concat([cust])
-    })
+      Creditors: this.state.Creditors.concat([cust]),
+    });
   }
 
   remove(ent: Creditor) {
@@ -60,8 +61,8 @@ export class Creditors extends React.Component<any, CreditorState> {
       // refresh Creditor list to remove deleted Creditors
       this.setState({
         selected: null,
-        Creditors: this.manager.getEntities("Creditor") as Creditor[]
-      })
+        Creditors: this.manager.getEntities("Creditor") as Creditor[],
+      });
     });
   }
 
@@ -70,18 +71,35 @@ export class Creditors extends React.Component<any, CreditorState> {
     // refresh Creditor list to restore original state
     this.setState({
       selected: null,
-      Creditors: this.manager.getEntities("Creditor") as Creditor[]
-    })
+      Creditors: this.manager.getEntities("Creditor") as Creditor[],
+    });
   }
 
   renderCustEdit() {
     let creditor = this.state.selected;
     if (creditor) {
-      return <div><h3>Edit</h3>
-        <div>Name: <input type="text" name="name" value={creditor.name || ''} onChange={creditor.handleChange} /></div>       
+      return (
+        <div>
+          <h3>Edit</h3>
+          <div>
+            Name:{" "}
+            <input
+              type="text"
+              name="name"
+              value={creditor.name || ""}
+              onChange={creditor.handleChange}
+            />
+          </div>
 
-        <button type="button" className="btn btn-dark" onClick={this.remove.bind(this, creditor)}>Delete</button>
-      </div>
+          <button
+            type="button"
+            className="btn btn-dark"
+            onClick={this.remove.bind(this, creditor)}
+          >
+            Delete
+          </button>
+        </div>
+      );
     }
   }
 
@@ -90,35 +108,59 @@ export class Creditors extends React.Component<any, CreditorState> {
       <div>
         <h1>Creditors</h1>
 
-        <table className="table" style={{ margin: 'auto' }}>
+        <table className="table" style={{ margin: "auto" }}>
           <thead>
             <tr>
               <th>Creditor Id</th>
-              <th>Name</th>              
+              <th>Name</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            {this.state.Creditors.map(creditor =>
-              <tr key={creditor.creditorId}
-                style={{ backgroundColor: (creditor === this.state.selected) ? 'lightgray' : 'white' }}
-                onClick={() => this.setState({ selected: creditor })}>
-                  <td>{creditor.creditorId}</td>
-                <td>{creditor.name}</td>                
+            {this.state.Creditors.map((creditor) => (
+              <tr
+                key={creditor.creditorId}
+                style={{
+                  backgroundColor:
+                    creditor === this.state.selected ? "lightgray" : "white",
+                }}
+                onClick={() => this.setState({ selected: creditor })}
+              >
+                <td>{creditor.creditorId}</td>
+                <td>{creditor.name}</td>
                 <td>{creditor.entityAspect.entityState.name}</td>
-              </tr>)
-            }
+              </tr>
+            ))}
           </tbody>
         </table>
-        <button type="button" className="btn btn-dark" onClick={this.addCreditor}>Add Creditor</button>
+        <button
+          type="button"
+          className="btn btn-dark"
+          onClick={this.addCreditor}
+        >
+          Add Creditor
+        </button>
 
         {this.renderCustEdit()}
 
-        <div style={{ marginTop: '20px' }}>
-          <button type="button" className="btn btn-dark" disabled={!this.manager.hasChanges()} onClick={this.saveChanges}>Save Changes</button>
-          <button type="button" className="btn btn-dark" disabled={!this.manager.hasChanges()} onClick={this.rejectChanges}>Revert Changes</button>
+        <div style={{ marginTop: "20px" }}>
+          <button
+            type="button"
+            className="btn btn-dark"
+            disabled={!this.manager.hasChanges()}
+            onClick={this.saveChanges}
+          >
+            Save Changes
+          </button>
+          <button
+            type="button"
+            className="btn btn-dark"
+            disabled={!this.manager.hasChanges()}
+            onClick={this.rejectChanges}
+          >
+            Revert Changes
+          </button>
         </div>
-
       </div>
     );
   }

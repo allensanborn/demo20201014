@@ -1,21 +1,20 @@
-import React from 'react';
-import { EntityManager, EntityQuery } from 'breeze-client';
-import { Client } from '../model/client';
-import { entityManagerProvider } from '../model/entity-manager-provider';
+import React from "react";
+import { EntityManager, EntityQuery } from "breeze-client";
+import { Client } from "../model/client";
+import { entityManagerProvider } from "../model/entity-manager-provider";
 
 interface ClientState {
   Clients: Client[];
   selected: Client;
 }
 export class Clients extends React.Component<any, ClientState> {
-
   manager: EntityManager;
 
   constructor(props: any) {
     super(props);
     this.state = {
       Clients: [] as Client[],
-      selected: null as Client
+      selected: null as Client,
     };
     this.manager = entityManagerProvider.newManager();
 
@@ -28,11 +27,11 @@ export class Clients extends React.Component<any, ClientState> {
   componentDidMount() {
     entityManagerProvider.subscribeComponent(this.manager, this);
 
-    const query = new EntityQuery("Clients");//.expand("orders");
-    this.manager.executeQuery(query).then(qr => {
+    const query = new EntityQuery("Clients"); //.expand("orders");
+    this.manager.executeQuery(query).then((qr) => {
       this.setState({
         selected: null,
-        Clients: qr.results
+        Clients: qr.results,
       });
     });
   }
@@ -47,8 +46,8 @@ export class Clients extends React.Component<any, ClientState> {
     // select the new Client, and add it to the list of Clients
     this.setState({
       selected: cust,
-      Clients: this.state.Clients.concat([cust])
-    })
+      Clients: this.state.Clients.concat([cust]),
+    });
   }
 
   remove(ent: Client) {
@@ -60,8 +59,8 @@ export class Clients extends React.Component<any, ClientState> {
       // refresh Client list to remove deleted Clients
       this.setState({
         selected: null,
-        Clients: this.manager.getEntities("Client") as Client[]
-      })
+        Clients: this.manager.getEntities("Client") as Client[],
+      });
     });
   }
 
@@ -70,19 +69,44 @@ export class Clients extends React.Component<any, ClientState> {
     // refresh Client list to restore original state
     this.setState({
       selected: null,
-      Clients: this.manager.getEntities("Client") as Client[]
-    })
+      Clients: this.manager.getEntities("Client") as Client[],
+    });
   }
 
   renderCustEdit() {
     let cust = this.state.selected;
     if (cust) {
-      return <div><h3>Edit</h3>
-        <div>First Name: <input type="text" name="firstName" value={cust.firstName || ''} onChange={cust.handleChange} /></div>
-        <div>Last Name: <input type="text" name="lastName" value={cust.lastName || ''} onChange={cust.handleChange} /></div>
+      return (
+        <div>
+          <h3>Edit</h3>
+          <div>
+            First Name:{" "}
+            <input
+              type="text"
+              name="firstName"
+              value={cust.firstName || ""}
+              onChange={cust.handleChange}
+            />
+          </div>
+          <div>
+            Last Name:{" "}
+            <input
+              type="text"
+              name="lastName"
+              value={cust.lastName || ""}
+              onChange={cust.handleChange}
+            />
+          </div>
 
-        <button type="button" className="btn btn-dark" onClick={this.remove.bind(this, cust)}>Delete</button>
-      </div>
+          <button
+            type="button"
+            className="btn btn-dark"
+            onClick={this.remove.bind(this, cust)}
+          >
+            Delete
+          </button>
+        </div>
+      );
     }
   }
 
@@ -91,7 +115,7 @@ export class Clients extends React.Component<any, ClientState> {
       <div>
         <h1>Clients</h1>
 
-        <table className="table" style={{ margin: 'auto' }}>
+        <table className="table" style={{ margin: "auto" }}>
           <thead>
             <tr>
               <th>Client Id</th>
@@ -101,27 +125,47 @@ export class Clients extends React.Component<any, ClientState> {
             </tr>
           </thead>
           <tbody>
-            {this.state.Clients.map(client =>
-              <tr key={client.clientId}
-                style={{ backgroundColor: (client === this.state.selected) ? 'lightgray' : 'white' }}
-                onClick={() => this.setState({ selected: client })}>
-                  <td>{client.clientId}</td>
+            {this.state.Clients.map((client) => (
+              <tr
+                key={client.clientId}
+                style={{
+                  backgroundColor:
+                    client === this.state.selected ? "lightgray" : "white",
+                }}
+                onClick={() => this.setState({ selected: client })}
+              >
+                <td>{client.clientId}</td>
                 <td>{client.firstName}</td>
                 <td>{client.lastName}</td>
                 <td>{client.entityAspect.entityState.name}</td>
-              </tr>)
-            }
+              </tr>
+            ))}
           </tbody>
         </table>
-        <button type="button" className="btn btn-dark" onClick={this.addClient}>Add Client</button>
+        <button type="button" className="btn btn-dark" onClick={this.addClient}>
+          Add Client
+        </button>
 
         {this.renderCustEdit()}
 
-        <div style={{ marginTop: '20px' }}>
-          <button type="button" className="btn btn-dark" disabled={!this.manager.hasChanges()} onClick={this.saveChanges}>Save Changes</button>
-          <button type="button" className="btn btn-dark" disabled={!this.manager.hasChanges()} onClick={this.rejectChanges}>Revert Changes</button>
+        <div style={{ marginTop: "20px" }}>
+          <button
+            type="button"
+            className="btn btn-dark"
+            disabled={!this.manager.hasChanges()}
+            onClick={this.saveChanges}
+          >
+            Save Changes
+          </button>
+          <button
+            type="button"
+            className="btn btn-dark"
+            disabled={!this.manager.hasChanges()}
+            onClick={this.rejectChanges}
+          >
+            Revert Changes
+          </button>
         </div>
-
       </div>
     );
   }
